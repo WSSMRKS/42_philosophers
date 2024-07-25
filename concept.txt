@@ -1,0 +1,46 @@
+Dining Philosophers Problem:
+
+- 5 philosophers are sitting on a table. They can't talk to each other.
+- to not starve they need to eat.
+- Conditions:
+	- They can only eat if they have two forks.
+	--> implications:
+		Deadlock: all philosophers have only one fork.
+		Starvation: always the same philosophers are eating
+		--> resolve by the following rules:
+			- only pickup forks if left and right are available if not --> think
+			- prioritize for the philosopher that hasn't eaten the longest
+
+Subject:
+	general: Written in c, makefile, usual style
+	Overview: Here are things to know if you want to succeed this assignment:
+		- One or more philosophers sit at a table. in the middle is a large bowl of spaghetti
+		- The philosophers alernatively eat think or sleep
+			eating = not think not sleep
+			thinking = not eat not sleep
+			sleep = not eat not think
+		- There are forks on the table. As many forks as philosophers
+		- 2 forks are necessary to eat, left and right.
+		- Philosopher finished eating
+			--> forks back on the table
+			--> start sleeping
+			--> once awake they start thinking
+		- simulation ends when a philosopher dies of starvation.
+		Every philosopher needs to eat and should never starve
+		Philosophers don't speak to each other
+		Philosophers don't know if another philosopher is about to die
+		Philosophers should avoid dying!
+
+Global rules for the program:
+	- Program arguments: number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_mus_eat]
+
+Program rules mandatory:
+	- Each philosopher should be a thread
+	- There is one fork between each pair of philosophers. Therefore if there are several philosophers, each philosopher has a fork on their left side and a fork on their right side. if there is only one philosopher, there should be only one fork on the table.
+	- to prevent philosophers from duplicating forks, you should protect the forks state wit a mutex for each of them.
+
+Program rules bonus:
+	- All the forks are put in the middle of the table
+	- they have no status in memory but the number of available forks is represented by a semaphore.
+	- Each philosopher should be a process. But the main process should not be a philosopher.
+	
