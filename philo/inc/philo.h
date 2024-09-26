@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:36:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/09/26 15:58:51 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/09/26 18:18:36 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct s_philo {
 	int			tts;
 	int			nbotte;
 	bool		nbotte_present;
+	pthread_t	**threads;
 }				t_philo;
 
 /* function prototypes*/
