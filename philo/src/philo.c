@@ -6,106 +6,197 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:34:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/09/27 11:45:59 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/01 18:55:13 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void ft_cleanup_philo(t_philo *philo)
+void ft_cleanup_philo(t_general *main)
 {
 	int	i;
 
 	i = 0;
-	while (i < philo->nb_philo)
+	while (i < main->nb_philo)
 	{
-		free(philo->thread_return[i]);
-		free(philo->threads[i]);
+		free(main->thread_return[i]);
+		free(main->threads[i]);
 		i++;
 	}
-	free(philo->thread_return);
-	free(philo->threads);
+	free(main->thread_return);
+	free(main->threads);
 
 }
 
 
 void *ft_spawn_philo(void *arg)
 {
-	static int		i;
-	t_philo			*philo;
+	t_philosopher		*philo;
+	long long			timestamp;
 
-	philo = (t_philo *) arg;
-	if (philo->philos_spawned == 0)
-	i = 0;
-	else if (philo->philos_spawned > 0)
-		i++;
-	printf("I am Philo number %d\n", i);
-	usleep(500);
+	philo = (t_philosopher *) arg;
+	// usleep(5000);
+	printf("I am Philo number %d\n", philo->philo_nb);
+	// if (philo->forks->fork[i] == false)
+	// 	philo
+
+	while(1)
+	{
+		pthread_mutex_lock(&philo->right_fork);
+		pthread_mutex_lock(philo->left_fork);
+		timestamp = current_time() - philo->startup_time;
+		printf("%lld %d is eating\n", timestamp, philo->philo_nb);
+		precise_sleep(philo->main->tte);
+		pthread_mutex_unlock(&philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
+		timestamp = current_time() - philo->startup_time;
+		printf("%lld %d is sleeping\n", timestamp, philo->philo_nb);
+		precise_sleep(philo->main->tts);
+		timestamp = current_time() - philo->startup_time;
+		printf("%lld %d is thinking\n", timestamp, philo->philo_nb);
+	}
 	return (NULL);
 }
 
-int	ft_philo_handler(t_philo *philo)
+int	ft_philo_handler(t_general *main)
 {
-	int	i;
+	int		i;
+	// void	*retval;
 
 	i = 0;
-	while(i < philo->nb_philo)
+	while(i < main->nb_philo)
 	{
-		philo->philos_spawned++;
-		pthread_create(philo->threads[i++], NULL, ft_spawn_philo, philo);
+		main->philos_spawned++;
+		main->philos[i]->philo_nb = main->philos_spawned;
+		pthread_create(main->threads[i], NULL, ft_spawn_philo, main->philos[i]);
+		i++;
 	}
+	
+
 	i = 0;
-	while(i < philo->nb_philo)
+	while(i < main->nb_philo)
 	{
-		pthread_join(*philo->threads[i], philo->thread_return[i]);
+		pthread_join(*main->threads[i], &main->thread_return[i]);
+		printf("retval of the thread is %d\n", (int) (intptr_t) main->thread_return[i]);
 		i++;
 	}
 	return (0);
 }
 
-int	ft_init_philo(t_philo *philo, int argc, char **argv)
+int	ft_init_mutexes(t_general *main)
 {
-	int	i;
+	int i;
 
-	philo->nb_philo = ft_atoi(argv[1]);
-	if (philo->nb_philo < 1)
+	i = 0;
+	pthread_mutex_init(&main->death, NULL);
+	while (i < main->nb_philo)
+	{
+		if (i > 0)
+			main->philos[i]->left_fork = &main->philos[i - 1]->right_fork;
+		else
+			main->philos[i]->left_fork = &main->philos[main->nb_philo - 1]->right_fork;
+		pthread_mutex_init(&main->philos[i]->right_fork, NULL);
+		pthread_mutex_init(&main->philos[i]->state, NULL);
+		pthread_mutex_init(&main->philos[i]->time, NULL);
+		i++;
+	}
+	return (0);
+}
+
+int	ft_init_philo(t_general *main, int argc, char **argv)
+{
+	int				i;
+	int				j;
+
+	i = 1;
+	while (i < 5)
+	{
+		j = 0;
+		while(argv[i][j])
+		{
+			if (argv[i][j] < '0' || argv[i][j] > '9' || j > 9)
+				return (-1);
+			j++;
+		}
+		i++;
+	}
+	main->nb_philo = ft_atoi(argv[1]);
+	if (main->nb_philo < 1)
 		return (-1);
-	philo->ttd = ft_atoi(argv[2]);
-	philo->tte = ft_atoi(argv[3]);
-	philo->tts = ft_atoi(argv[4]);
-	philo->philos_spawned = 0;
+	main->ttd = ft_atoi(argv[2]);
+	main->tte = ft_atoi(argv[3]);
+	main->tts = ft_atoi(argv[4]);
+	main->philos_spawned = 0;
 	if (argc < 6)
-		philo->nbotte_present = false;
+		main->nbotte_present = false;
 	else
 	{
-		philo->nbotte_present = true;
-		philo->nbotte = ft_atoi(argv[5]);
+		main->nbotte_present = true;
+		main->nbotte = ft_atoi(argv[5]);
 	}
-	philo->threads = malloc(sizeof(pthread_t *) * (philo->nb_philo + 1));
-	philo->thread_return = malloc(sizeof(void *) * (philo->nb_philo + 1));
+	main->threads = malloc(sizeof(pthread_t *) * (main->nb_philo + 1));
+	main->thread_return = malloc(sizeof(void *) * (main->nb_philo + 1));
 	i = 0;
-	while(i < philo->nb_philo)
+	main->philos = malloc(sizeof(t_philosopher *) * (main->nb_philo + 1));
+	i = 0;
+	main->startup_time = current_time();
+	while(i < main->nb_philo)
 	{
-		philo->threads[i] = malloc(sizeof(pthread_t) * 1);
-		philo->thread_return[i++] = NULL;
+		main->threads[i] = malloc(sizeof(pthread_t) * 1);
+		main->thread_return[i] = NULL;
+		main->philos[i] = malloc(sizeof(t_philosopher) * 1);
+		main->philos[i]->main = main;
+		main->philos[i]->startup_time = main->startup_time;
+		i++;
 	}
+	main->threads[i] = NULL;
+	main->philos[i] = NULL;
+	ft_init_mutexes(main);
 	return (0);
 }
 
 int main(int argc, char **argv)
 {
-	t_philo		philo;
+	t_general			main;
 
+	printf("current time: %lld\n", current_time());
 	if (argc != 5 && argc != 6)
 	{
-		printf("Error: wrong number of arguments!\n");
+		printf("Error: input error\n");
 		return (1);
 	}
 	else
 	{
-		ft_init_philo(&philo, argc, argv);
-		ft_philo_handler(&philo);
-		ft_cleanup_philo(&philo);
+		if (ft_init_philo(&main, argc, argv) == -1)
+		{
+			printf("Error: input error\n");
+			return (5);
+		}
+		ft_philo_handler(&main);
+		ft_cleanup_philo(&main);
 	}
 	return (0);
+}
+
+long long	current_time(void)
+{
+	struct timeval	tv;
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000LL) + (tv.tv_usec / 1000));
+}
+
+void	precise_sleep(int ms)
+{
+	struct timeval	start;
+	struct timeval	end;
+	long long	elapsed_time;
+	elapsed_time = 0;
+	gettimeofday(&start, NULL);
+	while (elapsed_time < ms)
+	{
+		usleep(10);
+		gettimeofday(&end, NULL);
+		elapsed_time = (end.tv_sec - start.tv_sec) * 1000LL
+			+ (end.tv_usec - start.tv_usec) / 1000;
+	}
 }
