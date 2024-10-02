@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:36:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/02 12:43:31 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/02 15:37:29 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,17 +39,22 @@ typedef struct s_philosopher {
 typedef struct s_general {
 	int				nb_philo;
 	int				ttd;						//Time to die;
+	int				ttd2;
 	int				tte;						//Time to eat;
+	int				tte2;
 	int				tts;						//Time to sleep;
+	int				tts2;
 	int				nbotte;						//Number of times to eat;
 	bool			nbotte_present;				//Number of times to eat Present?;
 	pthread_t		**threads;
 	void			**thread_return;
 	int				philos_spawned;
 	long long		startup_time;
+	bool			death_occured;				//MUTEXed
 	t_philosopher	**philos;
 	pthread_mutex_t	death;						//MUTEX
-	// pthread_mutex_t	print;
+	pthread_mutex_t	print;						//MUTEX
+
 }				t_general;
 
 /* function prototypes*/

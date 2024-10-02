@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:34:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/02 13:07:00 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/02 15:42:20 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,12 @@ void ft_cleanup_philo(t_general *main)
 	ft_destroy_mutexes(main);
 	while (i < main->nb_philo)
 	{
+		free(main->philos[i]);
 		free(main->thread_return[i]);
 		free(main->threads[i]);
 		i++;
 	}
+	free(main->philos);
 	free(main->thread_return);
 	free(main->threads);
 
@@ -37,14 +39,17 @@ void *ft_spawn_philo(void *arg)
 	int					i;
 
 	philo = (t_philosopher *) arg;
-	// usleep(5000);
-	// printf("I am Philo number %d\n", philo->philo_nb);
-	// if (philo->forks->fork[i] == false)
-	// 	philo
 	i = 0;
 	while(1)
 	{
-		if ((i & 1) == 0)
+		pthread_mutex_lock(&philo->main->death);
+		if(philo->main->death_occured == true)
+		{
+			pthread_mutex_unlock(&philo->main->death);
+			return (0);
+		}
+		pthread_mutex_unlock(&philo->main->death);
+		if (((philo->philo_nb + i )& 1) == 0)
 		{
 			pthread_mutex_lock(&philo->right_fork);
 			pthread_mutex_lock(philo->left_fork);
@@ -58,9 +63,9 @@ void *ft_spawn_philo(void *arg)
 		pthread_mutex_lock(&philo->time);
 		philo->last_meal_time = current_time();
 		pthread_mutex_unlock(&philo->time);
-		pthread_mutex_lock(&philo->main->death);
-		pthread_mutex_unlock(&philo->main->death);
+		pthread_mutex_lock(&philo->main->print);
 		printf("%lld %d is eating\n", timestamp, philo->philo_nb);
+		pthread_mutex_unlock(&philo->main->print);
 		precise_sleep(philo->main->tte);
 		pthread_mutex_unlock(&philo->right_fork);
 		pthread_mutex_unlock(philo->left_fork);
@@ -69,13 +74,27 @@ void *ft_spawn_philo(void *arg)
 		pthread_mutex_unlock(&philo->meal_count);
 		timestamp = current_time() - philo->startup_time;
 		pthread_mutex_lock(&philo->main->death);
+		if(philo->main->death_occured == true)
+		{
+			pthread_mutex_unlock(&philo->main->death);
+			return (0);
+		}
 		pthread_mutex_unlock(&philo->main->death);
+		pthread_mutex_lock(&philo->main->print);
 		printf("%lld %d is sleeping\n", timestamp, philo->philo_nb); // #%d
+		pthread_mutex_unlock(&philo->main->print);
 		precise_sleep(philo->main->tts);
 		timestamp = current_time() - philo->startup_time;
 		pthread_mutex_lock(&philo->main->death);
+		if(philo->main->death_occured == true)
+		{
+			pthread_mutex_unlock(&philo->main->death);
+			return (0);
+		}
 		pthread_mutex_unlock(&philo->main->death);
+		pthread_mutex_lock(&philo->main->print);
 		printf("%lld %d is thinking\n", timestamp, philo->philo_nb);
+		pthread_mutex_unlock(&philo->main->print);
 		i++;
 	}
 	return (NULL);
@@ -108,9 +127,13 @@ int	ft_monitor(t_general *main)
 			if (current_time() - main->philos[i]->last_meal_time > main->ttd)
 			{
 				timestamp = current_time() - main->startup_time;
+				pthread_mutex_lock(&main->print);
 				printf("%lld %d died\n", timestamp, i+1);
 				pthread_mutex_lock(&main->death);
+				main->death_occured = true;
 				printf("death detected\n");
+				pthread_mutex_unlock(&main->print);
+				pthread_mutex_unlock(&main->death);
 				return (1);
 			}
 			pthread_mutex_unlock(&main->philos[i]->time);
@@ -159,6 +182,7 @@ int	ft_init_mutexes(t_general *main)
 
 	i = 0;
 	pthread_mutex_init(&main->death, NULL);
+	pthread_mutex_init(&main->print, NULL);
 	while (i < main->nb_philo)
 	{
 		if (i > 0)
@@ -175,10 +199,20 @@ int	ft_init_mutexes(t_general *main)
 
 int	ft_destroy_mutexes(t_general *main)
 {
-	int i;
+	int		i;
+	int		ttw;
 
 	i = 0;
+
+	if (main->ttd2 > main->tts2)
+		ttw = main->ttd2;
+	else
+		ttw = main->tts2;
+	if (ttw < main->tte2)
+		ttw = main->tte2;
+	precise_sleep(ttw);
 	pthread_mutex_destroy(&main->death);
+	pthread_mutex_destroy(&main->print);
 	while (i < main->nb_philo)
 	{
 		pthread_mutex_destroy(&main->philos[i]->right_fork);
@@ -212,6 +246,9 @@ int	ft_init_philo(t_general *main, int argc, char **argv)
 	main->ttd = ft_atoi(argv[2]);
 	main->tte = ft_atoi(argv[3]);
 	main->tts = ft_atoi(argv[4]);
+	main->ttd2 = main->ttd;
+	main->tte2 = main->tte;
+	main->tts2 = main->tts;
 	main->philos_spawned = 0;
 	if (argc < 6)
 		main->nbotte_present = false;
@@ -241,6 +278,8 @@ int	ft_init_philo(t_general *main, int argc, char **argv)
 		main->philos[i]->main = main;
 		main->philos[i]->startup_time = main->startup_time;
 		main->philos[i]->last_meal_time = main->startup_time;
+		main->philos[i]->nbothe = 0;
+		main->death_occured = false;
 		i++;
 	}
 	main->threads[i] = NULL;
