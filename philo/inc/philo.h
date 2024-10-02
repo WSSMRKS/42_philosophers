@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:36:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/01 21:00:57 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/02 12:43:31 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,8 @@
 # include <stdbool.h>
 # include <limits.h>
 
-typedef struct s_general t_general;
 
-// typedef struct s_surveillance {
-// 	t_general			*main;
-// }				t_surveillance;
+typedef struct s_general t_general;
 
 typedef struct s_philosopher {
 	int						philo_nb;
@@ -35,8 +32,8 @@ typedef struct s_philosopher {
 	t_general				*main;
 	pthread_mutex_t			right_fork;			//MUTEX
 	pthread_mutex_t			*left_fork;			//MUTEX
-	pthread_mutex_t			state;
-	pthread_mutex_t			time;
+	pthread_mutex_t			meal_count;			//MUTEX
+	pthread_mutex_t			time;				//MUTEX
 }				t_philosopher;
 
 typedef struct s_general {
@@ -51,8 +48,7 @@ typedef struct s_general {
 	int				philos_spawned;
 	long long		startup_time;
 	t_philosopher	**philos;
-	// t_surveillance	big_brother;
-	pthread_mutex_t	death;
+	pthread_mutex_t	death;						//MUTEX
 	// pthread_mutex_t	print;
 }				t_general;
 
