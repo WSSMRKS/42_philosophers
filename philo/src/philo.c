@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:34:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/02 15:42:20 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/02 18:41:13 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,7 @@ void *ft_spawn_philo(void *arg)
 	i = 0;
 	while(1)
 	{
-		pthread_mutex_lock(&philo->main->death);
-		if(philo->main->death_occured == true)
-		{
-			pthread_mutex_unlock(&philo->main->death);
-			return (0);
-		}
-		pthread_mutex_unlock(&philo->main->death);
+
 		if (((philo->philo_nb + i )& 1) == 0)
 		{
 			pthread_mutex_lock(&philo->right_fork);
@@ -59,11 +53,18 @@ void *ft_spawn_philo(void *arg)
 			pthread_mutex_lock(philo->left_fork);
 			pthread_mutex_lock(&philo->right_fork);
 		}
-		timestamp = current_time() - philo->startup_time;
 		pthread_mutex_lock(&philo->time);
 		philo->last_meal_time = current_time();
 		pthread_mutex_unlock(&philo->time);
+		pthread_mutex_lock(&philo->main->death);
+		if(philo->main->death_occured == true)
+		{
+			pthread_mutex_unlock(&philo->main->death);
+			return (0);
+		}
+		pthread_mutex_unlock(&philo->main->death);
 		pthread_mutex_lock(&philo->main->print);
+		timestamp = current_time() - philo->startup_time;
 		printf("%lld %d is eating\n", timestamp, philo->philo_nb);
 		pthread_mutex_unlock(&philo->main->print);
 		precise_sleep(philo->main->tte);
@@ -71,8 +72,8 @@ void *ft_spawn_philo(void *arg)
 		pthread_mutex_unlock(philo->left_fork);
 		pthread_mutex_lock(&philo->meal_count);
 		philo->nbothe++;
+		// printf("philo %d meal_count = %ld\n", philo->philo_nb, philo->nbothe);
 		pthread_mutex_unlock(&philo->meal_count);
-		timestamp = current_time() - philo->startup_time;
 		pthread_mutex_lock(&philo->main->death);
 		if(philo->main->death_occured == true)
 		{
@@ -81,10 +82,10 @@ void *ft_spawn_philo(void *arg)
 		}
 		pthread_mutex_unlock(&philo->main->death);
 		pthread_mutex_lock(&philo->main->print);
+		timestamp = current_time() - philo->startup_time;
 		printf("%lld %d is sleeping\n", timestamp, philo->philo_nb); // #%d
 		pthread_mutex_unlock(&philo->main->print);
 		precise_sleep(philo->main->tts);
-		timestamp = current_time() - philo->startup_time;
 		pthread_mutex_lock(&philo->main->death);
 		if(philo->main->death_occured == true)
 		{
@@ -93,6 +94,7 @@ void *ft_spawn_philo(void *arg)
 		}
 		pthread_mutex_unlock(&philo->main->death);
 		pthread_mutex_lock(&philo->main->print);
+		timestamp = current_time() - philo->startup_time;
 		printf("%lld %d is thinking\n", timestamp, philo->philo_nb);
 		pthread_mutex_unlock(&philo->main->print);
 		i++;
@@ -115,10 +117,11 @@ int	ft_monitor(t_general *main)
 		nbothe_old = nbothe_min;
 		while(i < main->nb_philo)
 		{
+			precise_sleep(5);
 			if (main->nbotte_present == true)
 			{
 				pthread_mutex_lock(&main->philos[i]->meal_count);
-				nbothe_old = nbothe_min;
+				nbothe_min = main->philos[i]->nbothe;
 				if (main->philos[i]->nbothe < nbothe_min)
 					nbothe_min = main->philos[i]->nbothe;
 				pthread_mutex_unlock(&main->philos[i]->meal_count);
@@ -139,8 +142,8 @@ int	ft_monitor(t_general *main)
 			pthread_mutex_unlock(&main->philos[i]->time);
 			i++;
 		}
-		if (nbothe_min > nbothe_old)
-			printf("nbothe_min changed to: %d", nbothe_min);
+		// if (nbothe_min > nbothe_old)
+		// 	printf("nbothe_min changed to: %d\n", nbothe_min);
 		if (main->nbotte_present == true && nbothe_min >= main->nbotte)
 		{
 			pthread_mutex_lock(&main->death);
