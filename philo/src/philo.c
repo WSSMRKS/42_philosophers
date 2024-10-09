@@ -6,13 +6,13 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:34:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/02 18:41:13 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/09 12:31:01 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void ft_cleanup_philo(t_general *main)
+void	ft_cleanup_philo(t_general *main)
 {
 	int	i;
 
@@ -43,7 +43,7 @@ void *ft_spawn_philo(void *arg)
 	while(1)
 	{
 
-		if (((philo->philo_nb + i )& 1) == 0)
+		if (((philo->philo_nb) & 1) == 0)
 		{
 			pthread_mutex_lock(&philo->right_fork);
 			pthread_mutex_lock(philo->left_fork);
@@ -59,6 +59,8 @@ void *ft_spawn_philo(void *arg)
 		pthread_mutex_lock(&philo->main->death);
 		if(philo->main->death_occured == true)
 		{
+			pthread_mutex_unlock(&philo->right_fork);
+			pthread_mutex_unlock(philo->left_fork);
 			pthread_mutex_unlock(&philo->main->death);
 			return (0);
 		}
@@ -107,21 +109,21 @@ int	ft_monitor(t_general *main)
 	int			i;
 	int			nbothe_min;
 	long long	timestamp;
-	int			nbothe_old;
+	// int			nbothe_old;
 
-	nbothe_min = INT_MAX;
 
 	while (1)
 	{
 		i = 0;
-		nbothe_old = nbothe_min;
+		// nbothe_old = nbothe_min;
 		while(i < main->nb_philo)
 		{
 			precise_sleep(5);
+			nbothe_min = INT_MAX;
 			if (main->nbotte_present == true)
 			{
 				pthread_mutex_lock(&main->philos[i]->meal_count);
-				nbothe_min = main->philos[i]->nbothe;
+				// nbothe_min = main->philos[i]->nbothe;
 				if (main->philos[i]->nbothe < nbothe_min)
 					nbothe_min = main->philos[i]->nbothe;
 				pthread_mutex_unlock(&main->philos[i]->meal_count);
@@ -214,6 +216,7 @@ int	ft_destroy_mutexes(t_general *main)
 	if (ttw < main->tte2)
 		ttw = main->tte2;
 	precise_sleep(ttw);
+	pthread_mutex_unlock(&main->death);
 	pthread_mutex_destroy(&main->death);
 	pthread_mutex_destroy(&main->print);
 	while (i < main->nb_philo)
