@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:36:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/09 13:44:39 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/09 16:14:31 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,13 @@
 # include <sys/time.h>
 # include <stdbool.h>
 # include <limits.h>
+
+enum e_meal
+{
+	eating,
+	sleeping,
+	thinking
+};
 
 typedef struct s_general	t_general;
 
@@ -58,25 +65,35 @@ typedef struct s_general
 }				t_general;
 
 /* function prototypes*/
+/* init.c */
+
+int			ft_init_mutexes(t_general *main);
+int			ft_input_precheck(char **argv, int args);
+int			ft_allocate_philos(t_general *main);
+int			ft_allocate(t_general *main);
+int			ft_init_philo(t_general *main, int argc, char **argv);
+
 /* ft_atoi.c */
 
 int			ft_atoi(const char *nptr);
+
+/* monitor.c */
+
+int			ft_death_monitor(t_general *main, int i);
+void		ft_meal_monitor(t_general *main, int i, int *nbothe_min);
+int			ft_monitor(t_general *main);
+int			ft_philo_handler(t_general *main);
+
+/* philo.c */
+
+void		*ft_philo(void *arg);
+int			ft_monitor(t_general *main);
+int			ft_philo_handler(t_general *main);
 
 /* clean.c */
 
 int			ft_destroy_mutexes(t_general *main);
 void		ft_cleanup_philo(t_general *main);
-
-/* init.c */
-
-int			ft_init_mutexes(t_general *main);
-int			ft_init_philo(t_general *main, int argc, char **argv);
-
-/* philo.c */
-
-void		*ft_spawn_philo(void *arg);
-int			ft_monitor(t_general *main);
-int			ft_philo_handler(t_general *main);
 
 /* sleep.c */
 
