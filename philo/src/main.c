@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:37:58 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/09 13:52:22 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/09 14:42:08 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,14 @@ int	main(int argc, char **argv)
 		printf("Error: input error\n");
 		return (5);
 	}
-	ret = ft_philo_handler(&main);
+	if (main.nb_philo == 1)
+	{
+		precise_sleep(main.ttd);
+		printf("%d 1 died", main.ttd);
+		ret = 1;
+	}
+	else
+		ret = ft_philo_handler(&main);
 	ft_cleanup_philo(&main);
 	return (ret);
 }
