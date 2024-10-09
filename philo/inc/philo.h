@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:36:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/02 15:37:29 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/09 12:52:42 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,10 @@
 # include <limits.h>
 
 
-typedef struct s_general t_general;
+typedef struct s_general	t_general;
 
-typedef struct s_philosopher {
+typedef struct s_philosopher
+{
 	int						philo_nb;
 	long long				startup_time;		//local startup time;
 	long					last_meal_time;		//MUTEX
@@ -36,41 +37,52 @@ typedef struct s_philosopher {
 	pthread_mutex_t			time;				//MUTEX
 }				t_philosopher;
 
-typedef struct s_general {
+typedef struct s_general
+{
 	int				nb_philo;
-	int				ttd;						//Time to die;
+	int				ttd;				//Time to die;
 	int				ttd2;
-	int				tte;						//Time to eat;
+	int				tte;				//Time to eat;
 	int				tte2;
-	int				tts;						//Time to sleep;
+	int				tts;				//Time to sleep;
 	int				tts2;
-	int				nbotte;						//Number of times to eat;
-	bool			nbotte_present;				//Number of times to eat Present?;
+	int				nbotte;				//Number of times to eat;
+	bool			nbotte_present;		//Number of times to eat Present?;
 	pthread_t		**threads;
 	void			**thread_return;
 	int				philos_spawned;
 	long long		startup_time;
-	bool			death_occured;				//MUTEXed
+	bool			death_occured;		//MUTEXed
 	t_philosopher	**philos;
-	pthread_mutex_t	death;						//MUTEX
-	pthread_mutex_t	print;						//MUTEX
+	pthread_mutex_t	death;				//MUTEX
+	pthread_mutex_t	print;				//MUTEX
 
 }				t_general;
 
 /* function prototypes*/
 /* ft_atoi.c */
 
-int	ft_atoi(const char *nptr);
+int			ft_atoi(const char *nptr);
 
-/*philo.c*/
+/* clean.c */
 
+int			ft_destroy_mutexes(t_general *main);
 void		ft_cleanup_philo(t_general *main);
-void		*ft_spawn_philo(void *arg);
-int			ft_philo_handler(t_general *main);
+
+/* init.c */
+
 int			ft_init_mutexes(t_general *main);
 int			ft_init_philo(t_general *main, int argc, char **argv);
+
+/* philo.c */
+
+void		*ft_spawn_philo(void *arg);
+int			ft_monitor(t_general *main);
+int			ft_philo_handler(t_general *main);
+
+/* sleep.c */
+
 long long	current_time(void);
 void		precise_sleep(int ms);
-int	ft_destroy_mutexes(t_general *main);
 
 #endif

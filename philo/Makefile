@@ -12,7 +12,7 @@ COMPILE_FLAGS = -g3 -Werror -Wall -Wextra -O0 -c
 # Compiler #
 CC = cc
 # Source Files #
-SRC = $(SRCDIR)ft_atoi.c $(SRCDIR)philo.c
+SRC = $(SRCDIR)clean.c $(SRCDIR)ft_atoi.c $(SRCDIR)init.c $(SRCDIR)main.c $(SRCDIR)philo.c $(SRCDIR)sleep.c
 HEADERS = $(HDRDIR)philo.h
 # Object Files
 SRC_OBJ = $(SRC:.c=.o)
