@@ -1,6 +1,6 @@
-[ ] simulation not ending when supposed to end.
-[ ] Number of times eaten not accurate!!
-[ ] Deadlocks when started.
-[ ] divide in files.
-[ ] norminette.
+[x] simulation not ending when supposed to end.
+[x] Number of times eaten not accurate!!
+[x] Deadlocks when started.
+[x] divide in files.
+[x] norminette.
 
