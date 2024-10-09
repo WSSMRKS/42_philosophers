@@ -1,0 +1,6 @@
+grep eating:
+x=1; while [ $x -le 10 ]; do grep "$x is eating" log3.txt | wc -l; x=$((x+1)); done
+grep sleeping:
+x=1; while [ $x -le 10 ]; do grep "$x is sleeping" log3.txt | wc -l; x=$((x+1)); done
+grep thinking:
+x=1; while [ $x -le 10 ]; do grep "$x is thinking" log3.txt | wc -l; x=$((x+1)); done
