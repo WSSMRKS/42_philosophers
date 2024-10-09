@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:37:58 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/09 12:38:32 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/09 13:52:22 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,14 @@
 int	main(int argc, char **argv)
 {
 	t_general			main;
+	int					ret;
 
-	printf("./philo nb_philo ttd tte tts nbotte\n");
-	if (argc != 5 && argc != 6)
+	if ((argc != 5 && argc != 6) || ft_init_philo(&main, argc, argv) == -1)
 	{
 		printf("Error: input error\n");
-		return (1);
+		return (5);
 	}
-	else
-	{
-		if (ft_init_philo(&main, argc, argv) == -1)
-		{
-			printf("Error: input error\n");
-			return (5);
-		}
-		ft_philo_handler(&main);
-		ft_cleanup_philo(&main);
-	}
-	return (0);
+	ret = ft_philo_handler(&main);
+	ft_cleanup_philo(&main);
+	return (ret);
 }

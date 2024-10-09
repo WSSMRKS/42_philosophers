@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:42:16 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/09 12:54:45 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/09 13:44:56 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ int	ft_destroy_mutexes(t_general *main)
 	int		ttw;
 
 	i = 0;
-
 	if (main->ttd2 > main->tts2)
 		ttw = main->ttd2;
 	else

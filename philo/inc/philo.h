@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:36:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/09 12:52:42 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/09 13:44:39 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@
 # include <sys/time.h>
 # include <stdbool.h>
 # include <limits.h>
-
 
 typedef struct s_general	t_general;
 
@@ -56,7 +55,6 @@ typedef struct s_general
 	t_philosopher	**philos;
 	pthread_mutex_t	death;				//MUTEX
 	pthread_mutex_t	print;				//MUTEX
-
 }				t_general;
 
 /* function prototypes*/

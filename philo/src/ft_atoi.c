@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/18 12:25:26 by maweiss           #+#    #+#             */
-/*   Updated: 2024/09/26 15:55:14 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/09 13:35:31 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,15 +58,3 @@ int	ft_atoi(const char *nptr)
 	else
 		return (0);
 }
-
-/*
-int	main(void)
-{
-	static char	*string = "-1";
-
-	printf("String: \"%s\"\n", string);
-	printf("Number: %d\n", ft_atoi(string));
-	printf("String: \"%s\"\n", string);
-	printf("Number: %d\n", atoi(string));
-}
-*/

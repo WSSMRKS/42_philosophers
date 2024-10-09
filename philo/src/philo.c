@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:34:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/09 12:47:11 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/09 14:29:49 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	*ft_spawn_philo(void *arg)
 	i = 0;
 	while (1)
 	{
-
 		if (((philo->philo_nb) & 1) == 0)
 		{
 			pthread_mutex_lock(&philo->right_fork);
@@ -89,7 +88,6 @@ int	ft_monitor(t_general *main)
 	int			nbothe_min;
 	long long	timestamp;
 
-
 	while (1)
 	{
 		i = 0;
@@ -109,10 +107,9 @@ int	ft_monitor(t_general *main)
 			{
 				timestamp = current_time() - main->startup_time;
 				pthread_mutex_lock(&main->print);
-				printf("%lld %d died\n", timestamp, i+1);
+				printf("%lld %d died\n", timestamp, i + 1);
 				pthread_mutex_lock(&main->death);
 				main->death_occured = true;
-				printf("death detected\n");
 				pthread_mutex_unlock(&main->print);
 				pthread_mutex_unlock(&main->death);
 				return (1);
@@ -132,6 +129,7 @@ int	ft_monitor(t_general *main)
 int	ft_philo_handler(t_general *main)
 {
 	int		i;
+	int		ret;
 
 	i = 0;
 	while (i < main->nb_philo)
@@ -141,10 +139,9 @@ int	ft_philo_handler(t_general *main)
 		pthread_create(main->threads[i], NULL, ft_spawn_philo, main->philos[i]);
 		i++;
 	}
-	if (ft_monitor(main) == 0)
-		printf("\"number_of_times_each_philosopher_must_eat\" reached\n");
+	ret = ft_monitor(main);
 	i = 0;
 	while (i < main->nb_philo)
 		pthread_detach(*main->threads[i++]);
-	return (0);
+	return (ret);
 }
