@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:34:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/09 18:40:21 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/09 20:35:10 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,11 @@ void	*ft_philo(void *arg)
 		precise_sleep(philo->main->tte);
 		pthread_mutex_unlock(&philo->right_fork);
 		pthread_mutex_unlock(philo->left_fork);
+		if (ft_death_check(philo, 1) == 1)
+			return (NULL);
 		pthread_mutex_lock(&philo->meal_count);
 		philo->nbothe++;
 		pthread_mutex_unlock(&philo->meal_count);
-		if (ft_death_check(philo, 1) == 1)
-			return (NULL);
 		ft_print_statement(philo, sleeping);
 		precise_sleep(philo->main->tts);
 		if (ft_death_check(philo, 1) == 1)
