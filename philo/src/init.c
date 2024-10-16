@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:40:29 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/09 14:21:20 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/16 18:42:13 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ int	ft_init_philo(t_general *main, int argc, char **argv)
 	main->tte = ft_atoi(argv[3]);
 	main->tts = ft_atoi(argv[4]);
 	main->ttd2 = main->ttd;
-	main->tte2 = main->tte;
 	main->tts2 = main->tts;
 	main->philos_spawned = 0;
 	main->nbotte_present = false;

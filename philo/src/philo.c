@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:34:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/09 20:35:10 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/16 19:52:54 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,35 @@ void	ft_count_meal(t_philosopher *philo)
 	pthread_mutex_unlock(&philo->time);
 }
 
+// void	*ft_philo(void *arg)
+// {
+// 	t_philosopher		*philo;
+
+// 	philo = (t_philosopher *) arg;
+// 	while (1)
+// 	{
+// 		if (ft_death_check(philo, 0) == 1)
+// 			return (NULL);
+// 		ft_pickup_forks(philo);
+// 		ft_count_meal(philo);
+// 		ft_print_statement(philo, eating);
+// 		precise_sleep(philo->main->tte);
+// 		pthread_mutex_unlock(&philo->right_fork);
+// 		pthread_mutex_unlock(philo->left_fork);
+// 		pthread_mutex_lock(&philo->meal_count);
+// 		philo->nbothe++;
+// 		pthread_mutex_unlock(&philo->meal_count);
+// 		ft_print_statement(philo, sleeping);
+// 		if (ft_death_check(philo, 0) == 1)
+// 			return (NULL);
+// 		precise_sleep(philo->main->tts);
+// 		if (ft_death_check(philo, 0) == 1)
+// 			return (NULL);
+// 		ft_print_statement(philo, thinking);
+// 	}
+// }
+
+
 void	*ft_philo(void *arg)
 {
 	t_philosopher		*philo;
@@ -72,10 +101,10 @@ void	*ft_philo(void *arg)
 	philo = (t_philosopher *) arg;
 	while (1)
 	{
-		if (ft_death_check(philo, 1) == 1)
-			return (NULL);
 		ft_pickup_forks(philo);
 		ft_count_meal(philo);
+		if (ft_death_check(philo, 1) == 1)
+			return (NULL);
 		ft_print_statement(philo, eating);
 		precise_sleep(philo->main->tte);
 		pthread_mutex_unlock(&philo->right_fork);
@@ -83,11 +112,11 @@ void	*ft_philo(void *arg)
 		pthread_mutex_lock(&philo->meal_count);
 		philo->nbothe++;
 		pthread_mutex_unlock(&philo->meal_count);
-		ft_print_statement(philo, sleeping);
-		if (ft_death_check(philo, 1) == 1)
+		if (ft_death_check(philo, 0) == 1)
 			return (NULL);
+		ft_print_statement(philo, sleeping);
 		precise_sleep(philo->main->tts);
-		if (ft_death_check(philo, 1) == 1)
+		if (ft_death_check(philo, 0) == 1)
 			return (NULL);
 		ft_print_statement(philo, thinking);
 	}

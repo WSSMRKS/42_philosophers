@@ -52,6 +52,10 @@ name: # print project name #
 exv: all
 	valgrind --leak-check=full --show-leak-kinds=all ./philo
 
+exh: all
+	valgrind --tool=helgrind ./philo
+
+
 ex: all
 	./philo
 

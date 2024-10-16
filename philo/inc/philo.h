@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:36:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/16 17:41:32 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/16 18:42:17 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ typedef struct s_general
 	int				ttd;
 	int				ttd2;
 	int				tte;
-	int				tte2;
 	int				tts;
 	int				tts2;
 	int				nbotte;
