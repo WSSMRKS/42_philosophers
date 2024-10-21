@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:40:29 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/16 18:42:13 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/21 13:30:54 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	ft_init_mutexes(t_general *main)
 	int	i;
 
 	i = 0;
+	pthread_mutex_init(&main->start, NULL);
 	pthread_mutex_init(&main->death, NULL);
 	pthread_mutex_init(&main->print, NULL);
 	while (i < main->nb_philo)

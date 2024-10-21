@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/09 12:42:16 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/09 18:52:28 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/21 16:43:06 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ int	ft_destroy_mutexes(t_general *main)
 		ttw = main->ttd2;
 	else
 		ttw = main->tts2;
-	precise_sleep(ttw);
-	if (main->nb_philo > 1)
-		pthread_mutex_unlock(&main->death);
+	// if (main->nb_philo > 1)
+	// 	pthread_mutex_unlock(&main->death);
+	precise_sleep(ttw + 200);
 	pthread_mutex_destroy(&main->death);
 	pthread_mutex_destroy(&main->print);
 	while (i < main->nb_philo)

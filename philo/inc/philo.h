@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:36:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/16 18:42:17 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/21 13:31:07 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ typedef struct s_general
 	t_philosopher	**philos;
 	pthread_mutex_t	death;
 	pthread_mutex_t	print;
+	pthread_mutex_t	start;
 }				t_general;
 
 /* function prototypes*/
@@ -88,6 +89,7 @@ int			ft_philo_handler(t_general *main);
 void		*ft_philo(void *arg);
 int			ft_monitor(t_general *main);
 int			ft_philo_handler(t_general *main);
+void		ft_last_meal_time(t_philosopher *philo);
 
 /* clean.c */
 
