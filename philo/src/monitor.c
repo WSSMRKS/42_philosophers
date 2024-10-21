@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:34:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/21 16:54:05 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/21 17:07:55 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int	ft_monitor(t_general *main)
 		i = 0;
 		while (i < main->nb_philo)
 		{
-			precise_sleep(3);
+			precise_sleep(5);
 			nbothe_min = INT_MAX;
 			ft_meal_monitor(main, i, &nbothe_min);
 			if (!ft_death_monitor(main, i++))

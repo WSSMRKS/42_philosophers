@@ -6,7 +6,7 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:34:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/21 16:48:29 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/21 17:35:13 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,26 +78,26 @@ void	*ft_philo(void *arg)
 		if (ft_death_check(philo, 0) == 1)
 			return (NULL);
 		ft_pickup_forks(philo);
-		if (ft_death_check(philo, 1) == 1)
-			return (NULL);
 		ft_last_meal_time(philo);
 		if (ft_death_check(philo, 1) == 1)
 			return (NULL);
 		ft_print_statement(philo, eating);
-		precise_sleep(philo->main->tte);
-		pthread_mutex_unlock(&philo->right_fork);
-		pthread_mutex_unlock(philo->left_fork);
-		if (ft_death_check(philo, 0) == 1)
+		if (ft_death_check(philo, 1) == 1)
 			return (NULL);
+		precise_sleep(philo->main->tte);
 		pthread_mutex_lock(&philo->meal_count);
 		philo->nbothe++;
 		pthread_mutex_unlock(&philo->meal_count);
-		if (ft_death_check(philo, 0) == 1)
-			return (NULL);
+		pthread_mutex_unlock(&philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
+		// if (ft_death_check(philo, 0) == 1)
+		// 	return (NULL);
+		// if (ft_death_check(philo, 0) == 1)
+		// 	return (NULL);
 		ft_print_statement(philo, sleeping);
 		precise_sleep(philo->main->tts);
-		if (ft_death_check(philo, 0) == 1)
-			return (NULL);
+		// if (ft_death_check(philo, 0) == 1)
+		// 	return (NULL);
 		ft_print_statement(philo, thinking);
 	}
 }
