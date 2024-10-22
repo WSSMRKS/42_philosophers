@@ -4,7 +4,7 @@ HDRDIR = inc/
 # Names #
 NAME = philo
 # Compiler & Compilation Flags #
-COMPILE_OPTIONS =  -g -Werror -Wall -Wextra -pthread # -fsanitize=thread
+COMPILE_OPTIONS =  -g -Werror -Wall -Wextra -pthread #-fsanitize=thread
 # Detail on lft means including if libft was called blalibft the command would be -lblalibft it is searching for '.a' and '.so' files
 TESTFLAGS = -g3
 COMPILE_FLAGS = -g3 -Werror -Wall -Wextra -O1 -c

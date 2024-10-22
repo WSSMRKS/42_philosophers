@@ -6,14 +6,20 @@
 /*   By: maweiss <maweiss@student.42berlin.de>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/26 14:34:24 by maweiss           #+#    #+#             */
-/*   Updated: 2024/10/22 11:48:12 by maweiss          ###   ########.fr       */
+/*   Updated: 2024/10/22 12:03:50 by maweiss          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philo.h"
 
-void	ft_pickup_forks(t_philosopher *philo)
+void	ft_pickup_forks(t_philosopher *philo, int leave_forks)
 {
+	if (leave_forks == 1)
+	{
+		pthread_mutex_unlock(&philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
+		return ;
+	}
 	if (((philo->philo_nb) & 1) == 0)
 	{
 		pthread_mutex_lock(&philo->right_fork);
@@ -29,7 +35,7 @@ void	ft_pickup_forks(t_philosopher *philo)
 int	ft_death_check(t_philosopher *philo, int meal_check)
 {
 	pthread_mutex_lock(&philo->main->death);
-	if (philo->main->death_occured == true) //shared
+	if (philo->main->death_occured == true)
 	{
 		pthread_mutex_unlock(&philo->main->death);
 		if (meal_check == 1)
@@ -65,7 +71,6 @@ void	ft_last_meal_time(t_philosopher *philo)
 	pthread_mutex_unlock(&philo->time);
 }
 
-
 void	*ft_philo(void *arg)
 {
 	t_philosopher		*philo;
@@ -75,21 +80,16 @@ void	*ft_philo(void *arg)
 	{
 		if (ft_death_check(philo, 0) == 1)
 			return (NULL);
-		ft_pickup_forks(philo);
+		ft_pickup_forks(philo, 0);
 		ft_last_meal_time(philo);
 		if (ft_death_check(philo, 1) == 1)
 			return (NULL);
 		ft_print_statement(philo, eating);
-		// if (ft_death_check(philo, 1) == 1)
-		// 	return (NULL);
 		precise_sleep(philo->main->tte);
 		pthread_mutex_lock(&philo->meal_count);
 		philo->nbothe++;
 		pthread_mutex_unlock(&philo->meal_count);
-		pthread_mutex_unlock(&philo->right_fork);
-		pthread_mutex_unlock(philo->left_fork);
-		// if (ft_death_check(philo, 0) == 1)
-		// 	return (NULL);
+		ft_pickup_forks(philo, 1);
 		if (ft_death_check(philo, 0) == 1)
 			return (NULL);
 		ft_print_statement(philo, sleeping);
